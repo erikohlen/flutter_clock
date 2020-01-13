@@ -138,7 +138,7 @@ class _AnalogClockState extends State<AnalogClock> {
             // Example of a hand drawn with [CustomPainter].
             DrawnHand(
               color: customTheme.accentColor,
-              thickness: 4,
+              thickness: 8,
               size: 1,
               angleRadians: _now.second * radiansPerTick,
             ),
@@ -167,7 +167,7 @@ class _AnalogClockState extends State<AnalogClock> {
             ),
             Positioned(
               left: 0,
-              bottom: 0,
+              bottom: 90,
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: weatherInfo,

@@ -78,30 +78,33 @@ class _DigitalClockState extends State<DigitalClock> {
       _dateTime = DateTime.now();
       // Update once per minute. If you want to update every second, use the
       // following code.
-      _timer = Timer(
+      /* _timer = Timer(
         Duration(minutes: 1) -
             Duration(seconds: _dateTime.second) -
             Duration(milliseconds: _dateTime.millisecond),
         _updateTime,
-      );
+      ); */
       // Update once per second, but make sure to do it at the beginning of each
       // new second, so that the clock is accurate.
-      // _timer = Timer(
-      //   Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
-      //   _updateTime,
-      // );
+      _timer = Timer(
+        Duration(milliseconds: 100) -
+            Duration(milliseconds: _dateTime.millisecond),
+        _updateTime,
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).brightness == Brightness.light
+    final colors = Theme.of(context).brightness == Brightness.dark
         ? _lightTheme
         : _darkTheme;
     final hour =
         DateFormat(widget.model.is24HourFormat ? 'HH' : 'hh').format(_dateTime);
     final minute = DateFormat('mm').format(_dateTime);
-    final fontSize = MediaQuery.of(context).size.width / 3.5;
+    final second = DateFormat('ss').format(_dateTime);
+    final millisecond = _dateTime.millisecond;
+    final fontSize = MediaQuery.of(context).size.width / 7;
     final offset = -fontSize / 7;
     final defaultStyle = TextStyle(
       color: colors[_Element.text],
@@ -124,7 +127,12 @@ class _DigitalClockState extends State<DigitalClock> {
           child: Stack(
             children: <Widget>[
               Positioned(left: offset, top: 0, child: Text(hour)),
-              Positioned(right: offset, bottom: offset, child: Text(minute)),
+              Positioned(right: offset, top: 0, child: Text(minute)),
+              Positioned(left: offset, bottom: offset, child: Text(second)),
+              Positioned(
+                  right: offset,
+                  bottom: offset,
+                  child: Text((millisecond / 10).round().toString())),
             ],
           ),
         ),
