@@ -124,21 +124,16 @@ class _DigitalClockState extends State<DigitalClock> {
       width: 0,
     ));
 
-    int dumHour = 12;
+    int dumHour = 23;
     for (var i = 0; i < dumHour /* _dateTime.hour */; i++) {
       hourWidgets.add(Container(
-        width: 4,
-        height: 293,
+        width: 3,
+        height: ((3 * 23) + (2 * 22)).toDouble(),
         color: Colors.blue,
       ));
       hourWidgets.add(SizedBox(
-        width: 9,
+        width: 2,
       ));
-      if ((i + 1) % 5 == 0) {
-        hourWidgets.add(SizedBox(
-          width: 0,
-        ));
-      }
     }
     hourWidgets.add(
       Text(
@@ -170,7 +165,7 @@ class _DigitalClockState extends State<DigitalClock> {
     for (var i = 0; i < _dateTime.second; i++) {
       secWidgets.add(Container(
         width: 3,
-        height: 293,
+        height: 120,
         color: Colors.red,
       ));
       secWidgets.add(SizedBox(width: 2, height: 2));
@@ -200,10 +195,65 @@ class _DigitalClockState extends State<DigitalClock> {
     allWidgets.addAll(hourWidgets);
     //allWidgets.add(minCol);
 
+    Widget skewTop = Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.01)
+          ..rotateX(0.6),
+        //..rotateZ(45),
+        alignment: FractionalOffset.center,
+
+        //..scale(1.0, 0.8, 0.8),
+        //..scale(0),
+        //origin: Offset(150.0, 50.0),
+        child: Container(
+          height: 120.0,
+          width: 340.0,
+          //color: Colors.black,
+          child: secRow,
+        ));
+
+    Widget skewLeft = Transform(
+      transform: Matrix4.skewY(0.3), //..rotateZ(3.14 / 12.0),
+      origin: Offset(50.0, 50.0),
+      child: Container(
+          height: 120.0,
+          width: 170.0,
+          color: Colors.black,
+          child: Row(children: hourWidgets)),
+    );
+    Widget skewRight = Transform(
+        transform: Matrix4.skewY(-0.3), //..rotateZ(3.14 / 12.0),
+        origin: Offset(50.0, 50.0),
+        child: Container(
+          height: 110.0,
+          width: 120.0,
+          color: Colors.black,
+          child: minCol,
+        )
+        //child: Row(children: hourWidgets)),
+        );
+
     List<Widget> stackWidgets = [
-      Row(children: hourWidgets),
-      minCol,
-      secRow,
+      //Row(children: hourWidgets),
+      //minCol,
+      //secRow,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          skewLeft,
+          skewRight,
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          skewTop,
+          SizedBox(
+            height: 100,
+          )
+        ],
+      ),
     ];
 
     return Container(
@@ -211,9 +261,11 @@ class _DigitalClockState extends State<DigitalClock> {
       child: DefaultTextStyle(
           style: defaultStyle,
           child: Container(
-            width: 400,
-            height: 200,
-            child: Stack(children: stackWidgets),
+            child: Center(
+              child: Stack(
+                children: stackWidgets,
+              ),
+            ),
           )
 
           /* Stack(
