@@ -104,39 +104,130 @@ class _DigitalClockState extends State<DigitalClock> {
     final minute = DateFormat('mm').format(_dateTime);
     final second = DateFormat('ss').format(_dateTime);
     final millisecond = _dateTime.millisecond;
-    final fontSize = MediaQuery.of(context).size.width / 7;
+    final fontSize = MediaQuery.of(context).size.width / 14;
     final offset = -fontSize / 7;
     final defaultStyle = TextStyle(
       color: colors[_Element.text],
-      fontFamily: 'PressStart2P',
+      fontFamily: 'Helvetica',
       fontSize: fontSize,
-      shadows: [
+      /* shadows: [
         Shadow(
           blurRadius: 0,
           color: colors[_Element.shadow],
           offset: Offset(10, 0),
         ),
-      ],
+      ], */
     );
+
+    List<Widget> hourWidgets = [];
+    hourWidgets.add(SizedBox(
+      width: 0,
+    ));
+
+    int dumHour = 12;
+    for (var i = 0; i < dumHour /* _dateTime.hour */; i++) {
+      hourWidgets.add(Container(
+        width: 4,
+        height: 293,
+        color: Colors.blue,
+      ));
+      hourWidgets.add(SizedBox(
+        width: 9,
+      ));
+      if ((i + 1) % 5 == 0) {
+        hourWidgets.add(SizedBox(
+          width: 0,
+        ));
+      }
+    }
+    hourWidgets.add(
+      Text(
+        //_dateTime.hour.toString(),
+        dumHour.toString(),
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+
+    List<Widget> minWidgets = [];
+    int dumMin = 10;
+    for (var i = 0; i < dumMin /* _dateTime.minute */; i++) {
+      minWidgets.add(Container(
+        width: 293,
+        height: 3,
+        color: Colors.yellow.withAlpha(100),
+      ));
+      minWidgets.add(SizedBox(width: 5, height: 2));
+    }
+    minWidgets.add(
+      Text(
+        //_dateTime.minute.toString(),
+        dumMin.toString(),
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+
+    List<Widget> secWidgets = [];
+    for (var i = 0; i < _dateTime.second; i++) {
+      secWidgets.add(Container(
+        width: 3,
+        height: 293,
+        color: Colors.red,
+      ));
+      secWidgets.add(SizedBox(width: 2, height: 2));
+    }
+    secWidgets.add(Column(
+      children: <Widget>[
+        //SizedBox(height: _dateTime.second.toDouble() * 5),
+        Text(
+          _dateTime.second.toString(),
+          style: TextStyle(fontSize: 24),
+        ),
+      ],
+    ));
+    Widget secRow = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: secWidgets,
+    );
+
+    Widget minCol = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: minWidgets,
+    );
+
+    List<Widget> allWidgets = [];
+    allWidgets.addAll(hourWidgets);
+    //allWidgets.add(minCol);
+
+    List<Widget> stackWidgets = [
+      Row(children: hourWidgets),
+      minCol,
+      secRow,
+    ];
 
     return Container(
       color: colors[_Element.background],
-      child: Center(
-        child: DefaultTextStyle(
+      child: DefaultTextStyle(
           style: defaultStyle,
-          child: Stack(
-            children: <Widget>[
-              Positioned(left: offset, top: 0, child: Text(hour)),
-              Positioned(right: offset, top: 0, child: Text(minute)),
-              Positioned(left: offset, bottom: offset, child: Text(second)),
-              Positioned(
-                  right: offset,
-                  bottom: offset,
-                  child: Text((millisecond / 10).round().toString())),
-            ],
+          child: Container(
+            width: 400,
+            height: 200,
+            child: Stack(children: stackWidgets),
+          )
+
+          /* Stack(
+          children: <Widget>[
+            Positioned(left: offset, top: 0, child: Text(hour)),
+            Positioned(right: offset, top: 0, child: Text(minute)),
+            Positioned(left: offset, bottom: offset, child: Text(second)),
+            Positioned(
+                right: offset,
+                bottom: offset,
+                child: Text((millisecond / 10).round().toString())),
+          ],
+        ), */
           ),
-        ),
-      ),
     );
   }
 }
